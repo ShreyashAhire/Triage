@@ -35,21 +35,34 @@ The reference uses Next.js, Express/TypeScript services, MongoDB/Mongoose, JWT r
 
 These are competition-demo accounts, not production credentials.
 
+## Vercel Postgres / Neon setup
+
+Create a Postgres database through the Vercel Marketplace (Neon is recommended) and expose its connection string as `DATABASE_URL` for Development, Preview and Production.
+
+Run the schema migration once:
+
+```bash
+npm run db:migrate
+```
+
 ## Run locally
 
 ```bash
 npm install
+npm run db:migrate
 npm run dev
 ```
 
-Production build: `npm run build`. Requires Node.js 22.13+.
+Production build: `npm run build`. Requires Node.js 22.13+ and `DATABASE_URL`.
 
 ## Direct GitHub import
 
 1. Create an empty repository and extract this package into its root.
 2. Commit the included files.
-3. Import the repository into Vercel and keep the detected build defaults.
-4. Add the deployed URL here and in the submission deck.
+3. Import the repository into Vercel and keep the detected Next.js build defaults.
+4. Connect a Neon Postgres database and confirm `DATABASE_URL` is present.
+5. Run `npm run db:migrate` with the production connection string once.
+6. Redeploy, then add the URL here and in the submission deck.
 
 No secrets are required for the prototype.
 

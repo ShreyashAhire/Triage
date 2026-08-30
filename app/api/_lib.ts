@@ -1,4 +1,4 @@
-import { env } from "cloudflare:workers";
+import { sql } from "./db";
 
 export type Role = "doctor" | "nurse" | "viewer";
 export type Session = { token:string; email:string; name:string; role:Role };
@@ -14,7 +14,8 @@ const cookieValue=(request:Request,name:string)=>request.headers.get("cookie")?.
 export async function getSession(request:Request):Promise<Session|null>{
   const token=cookieValue(request,"pt_session");
   if(!token)return null;
-  return await env.DB.prepare("SELECT token,email,name,role FROM sessions WHERE token = ?").bind(token).first<Session>();
+  const rows=await sql<Session[]>`SELECT token,email,name,role FROM sessions WHERE token=${token}`;
+  return rows[0]??null;
 }
 
 export function unauthorized(message="Sign in required",status=401){return Response.json({error:message},{status});}
